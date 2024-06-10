@@ -54,8 +54,6 @@ public class Main {
             logger.info("No instances matched conditions found, returning...");
         }
         logger.info("Retrieved total number of instances matched date filter: {}", totalInstances);
-        int totalPages = (int) Math.ceil((double) totalInstances / chunkSize);
-        logger.info("Calculated total pages: {} with chunk size: {}", totalPages, chunkSize);
         // we need to retrieve all instances and keep in memory before updating,
         // because query filter uses 'updatedDate' field that is modifying during update operation
         Map<Integer, JSONArray> instanceChunks = getAllInstanceChunks(headers, restClient, totalInstances, chunkSize);
