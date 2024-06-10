@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 public class RestClient {
     private static final Logger logger = LogManager.getLogger(RestClient.class);
+    public static final String UPDATED_DATE_FILTER = "metadata.updatedDate>=\"2024-05-13T00:00:00.000\"";
 
     private final OkHttpClient client;
     private final String okapiUrl;
@@ -43,9 +44,28 @@ public class RestClient {
         }
     }
 
-    public JSONArray getInstances(Headers headers) throws Exception {
+    public int getTotalInstances(Headers headers) throws IOException {
         HttpUrl url = HttpUrl.parse(okapiUrl + "/instance-storage/instances").newBuilder()
-            .addQueryParameter("limit", String.valueOf(Integer.MAX_VALUE))
+            .addQueryParameter("query", UPDATED_DATE_FILTER)
+            .addQueryParameter("limit", "0")
+            .build();
+        Request request = new Request.Builder()
+            .url(url)
+            .headers(headers)
+            .get()
+            .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            JSONObject res = new JSONObject(response.body().string());
+            return res.getInt("totalRecords");
+        }
+    }
+
+    public JSONArray getInstances(Headers headers, int offset, int limit) throws Exception {
+        HttpUrl url = HttpUrl.parse(okapiUrl + "/instance-storage/instances").newBuilder()
+            .addQueryParameter("query", UPDATED_DATE_FILTER)
+            .addQueryParameter("offset", Integer.valueOf(offset).toString())
+            .addQueryParameter("limit", Integer.valueOf(limit).toString())
             .build();
         Request request = new Request.Builder()
             .url(url)
@@ -59,7 +79,7 @@ public class RestClient {
         }
     }
 
-    public void updateInstances(Headers headers, JSONArray instancesChunk) throws Exception {
+    public void updateInstancesInBulk(Headers headers, JSONArray instancesChunk) throws Exception {
         RequestBody postBody = RequestBody.create(new JSONObject()
             .put("instances", instancesChunk).toString().getBytes(StandardCharsets.UTF_8));
         HttpUrl url = HttpUrl.parse(okapiUrl + "/instance-storage/batch/synchronous").newBuilder()

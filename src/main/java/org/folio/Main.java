@@ -46,30 +46,19 @@ public class Main {
         }
         RestClient restClient = new RestClient(okapiUrl, tenant, username, password);
         Headers headers = restClient.login();
-        JSONArray allInstances = restClient.getInstances(headers);
-        logger.info("Retrieved instances, total: {}", allInstances.length());
-        JSONArray[] jsonArrays = splitJSONArray(allInstances, chunkSize);
-        for (JSONArray jsonArray: jsonArrays) {
-            logger.info("Started processing chunk with {} elements", jsonArray.length());
-            restClient.updateInstances(headers, jsonArray);
+        int totalInstances = restClient.getTotalInstances(headers);
+        if (totalInstances == 0) {
+            logger.info("No instances matched conditions found, returning...");
         }
-    }
-
-    private static JSONArray[] splitJSONArray(JSONArray jsonArray, int chunkSize) {
-        // standard exited function logic of splitting json array into chunks
-        int numOfChunks = (int) Math.ceil((double) jsonArray.length() / chunkSize);
-        JSONArray[] jsonArrays = new JSONArray[numOfChunks];
-
-        for (int i = 0; i < numOfChunks; ++i) {
-            jsonArrays[i] = new JSONArray();
-            for (int j = i * chunkSize; j < (i + 1) * chunkSize; j++) {
-                if (j < jsonArray.length()) {
-                    jsonArrays[i].put(jsonArray.get(j));
-                } else {
-                    break;
-                }
-            }
+        logger.info("Retrieved total number of instances matched date filter: {}", totalInstances);
+        int totalPages = (int) Math.ceil((double) totalInstances / chunkSize);
+        logger.info("Calculated total pages: {} with chunk size: {}", totalPages, chunkSize);
+        for (int i = 0; i < totalPages; i++) {
+            int offset = i * chunkSize;
+            logger.info("Started processing {} chunk with chunk size: {}", i + 1, chunkSize);
+            JSONArray instances = restClient.getInstances(headers, offset, chunkSize);
+            restClient.updateInstancesInBulk(headers, instances);
+            logger.info("Chunk {} has been processed", i + 1);
         }
-        return jsonArrays;
     }
 }
