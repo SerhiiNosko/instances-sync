@@ -47,10 +47,13 @@ BEGIN
 END $$;
 ```
 
-## 1. How to use API calls to update instances
+## 2. How to use API calls to update instances
 ### How to execute application
 Application is packages in jar file that can be used as following:
-```java -DokapiUrl=http://localhost:9130 -Dtenant=diku -Dusername=diku_admin -Dpassword=admin -jar instances-sync-1.0.jar```
+```shell
+java -DokapiUrl=http://localhost:9130 -Dtenant=diku -Dusername=diku_admin -Dpassword=admin -jar instances-sync-1.0.jar
+```
+instances-sync-1.0.jar is located in the target folder, so before running this command it is needed to change directory to target.
 
 ### List of input system properties
 
