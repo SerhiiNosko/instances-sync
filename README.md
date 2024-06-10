@@ -46,3 +46,33 @@ BEGIN
     FROM record_from_target_tenant as rs;
 END $$;
 ```
+
+## 1. How to use API calls to update instances
+### How to execute application
+Application is packages in jar file that can be used as following:
+```java -DokapiUrl=http://localhost:9130 -Dtenant=diku -Dusername=diku_admin -Dpassword=admin -jar instances-sync-1.0.jar```
+
+### List of input system properties
+
+| Property                        | Default | Description              |
+|---------------------------------|---------|--------------------------|
+| `okapiUrl`                      | `NA`    | Okapi url                |
+| `tenant`                        | `NA`    | Tenant to process        |
+| `username`                      | `NA`    | Admin username for login |
+| `password`                      | `NA`    | Admin password for login |
+| `chunkSize`                     | `1000`  | Chunk size to process    |
+
+### Example of execution
+```
+14:47:58.732 [main] INFO  org.folio.Main - Provided okapiUrl: http://localhost:9130
+14:47:58.733 [main] INFO  org.folio.Main - Provided tenant: diku
+14:47:58.733 [main] INFO  org.folio.Main - Provided username: diku_admin
+14:47:58.733 [main] INFO  org.folio.Main - Provided password: ***
+14:47:58.733 [main] INFO  org.folio.Main - Using default chunkSize: 1000
+14:47:59.189 [main] INFO  org.folio.Main - Retrieved total number of instances matched date filter: 36
+14:47:59.189 [main] INFO  org.folio.Main - Calculated total pages: 1 with chunk size: 1000
+14:47:59.189 [main] INFO  org.folio.Main - Started processing 1 chunk with chunk size: 1000
+14:47:59.392 [main] INFO  org.folio.RestClient - Update 36 instances operation completes with status code: 201
+14:47:59.393 [main] INFO  org.folio.Main - Chunk 1 has been processed
+
+```
