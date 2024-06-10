@@ -64,27 +64,26 @@ Application is packages in jar file that can be used as following:
 
 ### Example of execution
 ```
-15:23:48.958 [main] INFO  org.folio.Main - Provided okapiUrl: http://localhost:9130
-15:23:48.960 [main] INFO  org.folio.Main - Provided tenant: diku
-15:23:48.960 [main] INFO  org.folio.Main - Provided username: diku_admin
-15:23:48.960 [main] INFO  org.folio.Main - Provided password: ***
-15:23:48.960 [main] INFO  org.folio.Main - Provided chunkSize: 10
-15:23:50.019 [main] INFO  org.folio.Main - Retrieved total number of instances matched date filter: 36
-15:23:50.019 [main] INFO  org.folio.Main - Calculated total pages: 4 with chunk size: 10
-15:23:50.019 [main] INFO  org.folio.Main - Calculated total chunks: 4 with chunk size: 10
-15:23:50.019 [main] INFO  org.folio.Main - Started retrieving data for chunk: 1
-15:23:50.213 [main] INFO  org.folio.Main - Started retrieving data for chunk: 2
-15:23:50.247 [main] INFO  org.folio.Main - Started retrieving data for chunk: 3
-15:23:50.283 [main] INFO  org.folio.Main - Started retrieving data for chunk: 4
-15:23:50.351 [main] INFO  org.folio.Main - Total retrieved instances: 36 into 4 chunks
-15:23:50.431 [main] INFO  org.folio.RestClient - Update 10 instances operation completes with status code: 201
-15:23:50.431 [main] INFO  org.folio.Main - Chunk 1 has been processed
-15:23:50.541 [main] INFO  org.folio.RestClient - Update 10 instances operation completes with status code: 201
-15:23:50.541 [main] INFO  org.folio.Main - Chunk 2 has been processed
-15:23:50.669 [main] INFO  org.folio.RestClient - Update 10 instances operation completes with status code: 201
-15:23:50.669 [main] INFO  org.folio.Main - Chunk 3 has been processed
-15:23:50.783 [main] INFO  org.folio.RestClient - Update 6 instances operation completes with status code: 201
-15:23:50.783 [main] INFO  org.folio.Main - Chunk 4 has been processed
+15:39:21.132 [main] INFO  org.folio.Main - Provided okapiUrl: http://localhost:9130
+15:39:21.135 [main] INFO  org.folio.Main - Provided tenant: diku
+15:39:21.135 [main] INFO  org.folio.Main - Provided username: diku_admin
+15:39:21.135 [main] INFO  org.folio.Main - Provided password: ***
+15:39:21.135 [main] INFO  org.folio.Main - Provided chunkSize: 10
+15:39:22.199 [main] INFO  org.folio.Main - Retrieved total number of instances matched date filter: 36
+15:39:22.199 [main] INFO  org.folio.Main - Calculated total chunks: 4 with chunk size: 10
+15:39:22.199 [main] INFO  org.folio.Main - Started retrieving data for chunk: 1
+15:39:22.403 [main] INFO  org.folio.Main - Started retrieving data for chunk: 2
+15:39:22.448 [main] INFO  org.folio.Main - Started retrieving data for chunk: 3
+15:39:22.495 [main] INFO  org.folio.Main - Started retrieving data for chunk: 4
+15:39:22.531 [main] INFO  org.folio.Main - Total retrieved instances: 36 into 4 chunks
+15:39:22.589 [main] INFO  org.folio.RestClient - Update 10 instances operation completes with status code: 201
+15:39:22.589 [main] INFO  org.folio.Main - Chunk 1 has been processed
+15:39:22.699 [main] INFO  org.folio.RestClient - Update 10 instances operation completes with status code: 201
+15:39:22.699 [main] INFO  org.folio.Main - Chunk 2 has been processed
+15:39:22.804 [main] INFO  org.folio.RestClient - Update 10 instances operation completes with status code: 201
+15:39:22.804 [main] INFO  org.folio.Main - Chunk 3 has been processed
+15:39:23.004 [main] INFO  org.folio.RestClient - Update 6 instances operation completes with status code: 201
+15:39:23.004 [main] INFO  org.folio.Main - Chunk 4 has been processed
 
 Process finished with exit code 0
 
