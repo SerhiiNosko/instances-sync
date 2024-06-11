@@ -23,7 +23,7 @@ BEGIN
     )
     -- Insert each record into <central_tenant>_mod_consortia
     INSERT INTO <central_tenant>_mod_consortia.sharing_instance (id, instance_id, source_tenant_id, target_tenant_id, status)
-    SELECT rs.id, rs.id, '<central_tenant>', '<member_tenant>', 'COMPLETED'
+    SELECT rs.id, rs.id, '<central_tenant>', '<member_tenant>', 'COMPLETE'
     FROM record_from_target_tenant as rs;
 END $$;
 
@@ -42,7 +42,7 @@ BEGIN
         WHERE jsonb->>'source' = 'CONSORTIUM-MARC'
     )
     INSERT INTO consortium_mod_consortia.sharing_instance (id, instance_id, source_tenant_id, target_tenant_id, status)
-    SELECT rs.id, rs.id, 'consortium', 'college', 'COMPLETED'
+    SELECT rs.id, rs.id, 'consortium', 'college', 'COMPLETE'
     FROM record_from_target_tenant as rs;
 END $$;
 ```
