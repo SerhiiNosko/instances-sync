@@ -23,7 +23,7 @@ BEGIN
     )
     -- Insert each record into <central_tenant>_mod_consortia
     INSERT INTO <central_tenant>_mod_consortia.sharing_instance (id, instance_id, source_tenant_id, target_tenant_id, status)
-    SELECT rs.id, rs.id, '<central_tenant>', '<member_tenant>', 'COMPLETED'
+    SELECT rs.id, rs.id, '<central_tenant>', '<member_tenant>', 'COMPLETE'
     FROM record_from_target_tenant as rs;
 END $$;
 
@@ -42,28 +42,29 @@ BEGIN
         WHERE jsonb->>'source' = 'CONSORTIUM-MARC'
     )
     INSERT INTO consortium_mod_consortia.sharing_instance (id, instance_id, source_tenant_id, target_tenant_id, status)
-    SELECT rs.id, rs.id, 'consortium', 'college', 'COMPLETED'
+    SELECT rs.id, rs.id, 'consortium', 'college', 'COMPLETE'
     FROM record_from_target_tenant as rs;
 END $$;
 ```
 
 ## 2. How to use API calls to update instances
 ### How to execute application
+This java command line application touches the central tenant instance ids by fetching them and updating them with the same data. This update produces a kafka message which will cause the shadow instances for all member tenants to receive the central tenant's instance data. Make sure to run this java command line program only after all member tenants have received the PSQL update to mod-consortia above.
 Application is packages in jar file that can be used as following:
 ```shell
-java -DokapiUrl=http://localhost:9130 -Dtenant=diku -Dusername=diku_admin -Dpassword=admin -jar instances-sync-1.0.jar
+java -DokapiUrl=http://localhost:9130 -Dtenant=<central tenant id> -Dusername=<username> -Dpassword=<password> -jar instances-sync-1.0.jar
 ```
 instances-sync-1.0.jar is located in the target folder, so before running this command it is needed to change directory to target.
 
 ### List of input system properties
 
-| Property                        | Default | Description              |
-|---------------------------------|---------|--------------------------|
-| `okapiUrl`                      | `NA`    | Okapi url                |
-| `tenant`                        | `NA`    | Tenant to process        |
-| `username`                      | `NA`    | Admin username for login |
-| `password`                      | `NA`    | Admin password for login |
-| `chunkSize`                     | `1000`  | Chunk size to process    |
+| Property                        | Default | Description                   |
+|---------------------------------|---------|-------------------------------|
+| `okapiUrl`                      | `NA`    | Okapi url                     |
+| `tenant`                        | `NA`    | The central tenant to process |
+| `username`                      | `NA`    | Admin username for login      |
+| `password`                      | `NA`    | Admin password for login      |
+| `chunkSize`                     | `1000`  | Chunk size to process         |
 
 ### Example of execution
 ```
