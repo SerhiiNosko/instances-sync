@@ -5,6 +5,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
@@ -46,30 +49,35 @@ public class Main {
         }
         RestClient restClient = new RestClient(okapiUrl, tenant, username, password);
         Headers headers = restClient.login();
-        JSONArray allInstances = restClient.getInstances(headers);
-        logger.info("Retrieved instances, total: {}", allInstances.length());
-        JSONArray[] jsonArrays = splitJSONArray(allInstances, chunkSize);
-        for (JSONArray jsonArray: jsonArrays) {
-            logger.info("Started processing chunk with {} elements", jsonArray.length());
-            restClient.updateInstances(headers, jsonArray);
+        int totalInstances = restClient.getTotalInstances(headers);
+        if (totalInstances == 0) {
+            logger.info("No instances matched conditions found, returning...");
+        }
+        logger.info("Retrieved total number of instances matched date filter: {}", totalInstances);
+        // we need to retrieve all instances and keep in memory before updating,
+        // because query filter uses 'updatedDate' field that is modifying during update operation
+        Map<Integer, JSONArray> instanceChunks = getAllInstanceChunks(headers, restClient, totalInstances, chunkSize);
+
+        for (Map.Entry<Integer, JSONArray> entry : instanceChunks.entrySet()) {
+            int i = entry.getKey();
+            JSONArray instancesChunk = entry.getValue();
+            restClient.updateInstancesInBulk(headers, instancesChunk);
+            logger.info("Chunk {} has been processed", i + 1);
         }
     }
 
-    private static JSONArray[] splitJSONArray(JSONArray jsonArray, int chunkSize) {
-        // standard exited function logic of splitting json array into chunks
-        int numOfChunks = (int) Math.ceil((double) jsonArray.length() / chunkSize);
-        JSONArray[] jsonArrays = new JSONArray[numOfChunks];
-
-        for (int i = 0; i < numOfChunks; ++i) {
-            jsonArrays[i] = new JSONArray();
-            for (int j = i * chunkSize; j < (i + 1) * chunkSize; j++) {
-                if (j < jsonArray.length()) {
-                    jsonArrays[i].put(jsonArray.get(j));
-                } else {
-                    break;
-                }
-            }
+    private static Map<Integer, JSONArray> getAllInstanceChunks(Headers headers, RestClient restClient,
+                                                                int totalInstances, int chunkSize) throws Exception {
+        Map<Integer, JSONArray> result = new LinkedHashMap<>();
+        int totalPages = (int) Math.ceil((double) totalInstances / chunkSize);
+        logger.info("Calculated total chunks: {} with chunk size: {}", totalPages, chunkSize);
+        for (int i = 0; i < totalPages; i++) {
+            int offset = i * chunkSize;
+            logger.info("Started retrieving data for chunk: {}", i + 1);
+            JSONArray instances = restClient.getInstances(headers, offset, chunkSize);
+            result.put(i, instances);
         }
-        return jsonArrays;
+        logger.info("Total retrieved instances: {} into {} chunks", result.values().stream().mapToInt(JSONArray::length).sum(), totalPages);
+        return result;
     }
 }
