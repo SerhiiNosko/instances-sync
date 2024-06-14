@@ -7,7 +7,9 @@ There are two variables need to change to appropriate tenant names:
 1. central_tenant - source tenant
 2. member_tenant - target tenant
 e.g.: central_tenant to consortium, member_tenant to college
- 
+
+Note: gen_random_uuid() function only exists in PostgreSQL
+
 #### Script
 ```sql
 DO $$
@@ -23,7 +25,7 @@ BEGIN
     )
     -- Insert each record into <central_tenant>_mod_consortia
     INSERT INTO <central_tenant>_mod_consortia.sharing_instance (id, instance_id, source_tenant_id, target_tenant_id, status)
-    SELECT rs.id, rs.id, '<central_tenant>', '<member_tenant>', 'COMPLETE'
+    SELECT gen_random_uuid(), rs.id, '<central_tenant>', '<member_tenant>', 'COMPLETE'
     FROM record_from_target_tenant as rs;
 END $$;
 
@@ -42,7 +44,7 @@ BEGIN
         WHERE jsonb->>'source' = 'CONSORTIUM-MARC'
     )
     INSERT INTO consortium_mod_consortia.sharing_instance (id, instance_id, source_tenant_id, target_tenant_id, status)
-    SELECT rs.id, rs.id, 'consortium', 'college', 'COMPLETE'
+    SELECT gen_random_uuid(), rs.id, 'consortium', 'college', 'COMPLETE'
     FROM record_from_target_tenant as rs;
 END $$;
 ```
